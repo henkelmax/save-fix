@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "savefix",
+  "version": "${mod_version}",
+  "name": "SaveFix",
+  "description": "Fixes issues with auto-saves causing lag spikes",
+  "authors": [
+    "BreadLoaf",
+    "KaptainWutax",
+    "Max Henkel"
+  ],
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.maxhenkel.savefix.SaveFix"
+    ]
+  },
+  "mixins": [
+    "savefix.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "${fabric_loader_dependency}",
+    "minecraft": "${minecraft_dependency}"
+  }
+}

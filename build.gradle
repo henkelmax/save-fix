@@ -1,0 +1,14 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
+    id 'fabric-loom' version "${fabric_loom_version}"
+}
+
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+
+processResources {
+    filesMatching('fabric.mod.json') {
+        expand 'mod_version': mod_version,
+                'minecraft_dependency': minecraft_dependency,
+                'fabric_loader_dependency': fabric_loader_dependency
+    }
+}
