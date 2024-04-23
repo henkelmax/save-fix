@@ -1,6 +1,7 @@
 package de.maxhenkel.savefix.mixin;
 
 import de.maxhenkel.savefix.SaveFix;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -17,7 +18,7 @@ import java.nio.file.Path;
 @Mixin(SavedData.class)
 public abstract class SavedDataMixin {
 
-    @Redirect(method = "save(Ljava/io/File;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtIo;writeCompressed(Lnet/minecraft/nbt/CompoundTag;Ljava/nio/file/Path;)V"))
+    @Redirect(method = "save(Ljava/io/File;Lnet/minecraft/core/HolderLookup$Provider;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtIo;writeCompressed(Lnet/minecraft/nbt/CompoundTag;Ljava/nio/file/Path;)V"))
     private void writeCompressed(CompoundTag tag, Path path) throws IOException {
         if (!SaveFix.SERVER_CONFIG.useBufferedIo.get()) {
             if (SaveFix.SERVER_CONFIG.useUncompressedNbtIo.get()) {
@@ -42,13 +43,13 @@ public abstract class SavedDataMixin {
     @Unique
     private long startTime;
 
-    @Inject(method = "save(Ljava/io/File;)V", at = @At("HEAD"))
-    public void saveHead(File file, CallbackInfo ci) {
+    @Inject(method = "save(Ljava/io/File;Lnet/minecraft/core/HolderLookup$Provider;)V", at = @At("HEAD"))
+    public void saveHead(File file, HolderLookup.Provider provider, CallbackInfo ci) {
         startTime = System.nanoTime();
     }
 
-    @Inject(method = "save(Ljava/io/File;)V", at = @At("RETURN"))
-    public void saveReturn(File file, CallbackInfo ci) {
+    @Inject(method = "save(Ljava/io/File;Lnet/minecraft/core/HolderLookup$Provider;)V", at = @At("RETURN"))
+    public void saveReturn(File file, HolderLookup.Provider provider, CallbackInfo ci) {
         if (SaveFix.SERVER_CONFIG.logSaveTime.get()) {
             SaveFix.LOGGER.info("Saving {} took {}ms", file.getName(), (System.nanoTime() - startTime) / 1_000_000.0D);
         }
